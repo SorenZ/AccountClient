@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using MyTemplate.server.BackgroundServices;
 
 namespace mytemplate
 {
@@ -24,6 +25,7 @@ namespace mytemplate
 
          services.AddTransient<ILiveDataService, MockLiveDataService>();
          services.AddSingleton<IEmployeeService, EmployeeService>();
+         services.AddHostedService<ContactWatcher>();
       }
 
       public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -90,7 +90,7 @@ namespace mytemplate
             .Select(_ => Enumerable.Range(1, 3).Select(i => _random.Next(1, 100)).ToArray());
 
          RecentActivity = Observable
-            .Interval(TimeSpan.FromSeconds(2))
+            .Interval(TimeSpan.FromSeconds(10))
             .StartWith(0)
             .Select(_ => GetRandomEmployee(employeeService))
             .Select(employee => new Activity
