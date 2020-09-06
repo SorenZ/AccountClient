@@ -1,7 +1,7 @@
-﻿﻿using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace WebhooksDataContracts
+namespace MyTemplate.server.Dto
 {
     public class Payload
     {

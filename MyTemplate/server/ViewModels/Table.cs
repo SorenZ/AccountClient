@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using DotNetify;
 using DotNetify.Security;
+using MyTemplate.server.Services;
 
-namespace mytemplate
+namespace MyTemplate.server.ViewModels
 {
    [Authorize]
    public class Table : BaseVM

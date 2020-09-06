@@ -1,9 +1,9 @@
-﻿﻿﻿using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xero.NetStandard.OAuth2.Client;
 using Xero.NetStandard.OAuth2.Token;
 
-namespace XeroOAuth2Sample.Example
+namespace MyTemplate.server.Services
 {
     public class MemoryTokenStore
     {

@@ -1,12 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using Microsoft.Extensions.Logging;
-using MyTemplate.server.Services;
 
-namespace mytemplate
+namespace MyTemplate.server.Services
 {
    public interface ILiveDataService
    {
@@ -58,37 +56,37 @@ namespace mytemplate
       {
          _logger = logger;
          Download = Observable
-            .Interval(TimeSpan.FromMilliseconds(900))
+            .Interval(TimeSpan.FromMilliseconds(90000))
             .StartWith(0)
             .Select(_ => $"{Math.Round(_random.Next(15, 30) + _random.NextDouble(), 1)} Mb/s");
 
          Upload = Observable
-            .Interval(TimeSpan.FromMilliseconds(800))
+            .Interval(TimeSpan.FromMilliseconds(80000))
             .StartWith(0)
             .Select(_ => $"{Math.Round(_random.Next(5, 7) + _random.NextDouble(), 1)} Mb/s");
 
          Latency = Observable
-            .Interval(TimeSpan.FromSeconds(1))
+            .Interval(TimeSpan.FromSeconds(100))
             .StartWith(0)
             .Select(_ => $"{_random.Next(50, 200)} ms");
 
          Users = Observable
-            .Interval(TimeSpan.FromMilliseconds(1200))
+            .Interval(TimeSpan.FromMilliseconds(120000))
             .StartWith(0)
             .Select(_ => _random.Next(200, 300));
 
          Traffic = Observable
-            .Interval(TimeSpan.FromMilliseconds(600))
+            .Interval(TimeSpan.FromMilliseconds(60000))
             .StartWith(0)
             .Select(_ => Enumerable.Range(1, 7).Select(i => _random.Next(1000, 10000)).ToArray());
 
          ServerUsage = Observable
-            .Interval(TimeSpan.FromMilliseconds(400))
+            .Interval(TimeSpan.FromMilliseconds(40000))
             .StartWith(0)
             .Select(_ => Enumerable.Range(1, 10).Select(i => _random.Next(1, 100)).ToArray());
 
          Utilization = Observable
-            .Interval(TimeSpan.FromMilliseconds(800))
+            .Interval(TimeSpan.FromMilliseconds(80000))
             .StartWith(0)
             .Select(_ => Enumerable.Range(1, 3).Select(i => _random.Next(1, 100)).ToArray());
 

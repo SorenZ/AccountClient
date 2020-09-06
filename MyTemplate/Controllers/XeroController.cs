@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using mytemplate;
+using MyTemplate.server.Services;
 using Xero.NetStandard.OAuth2.Client;
 using Xero.NetStandard.OAuth2.Config;
-using Xero.NetStandard.OAuth2.Models;
+using Xero.NetStandard.OAuth2.Token;
 
 namespace MyTemplate.Controllers
 {
@@ -18,45 +17,46 @@ namespace MyTemplate.Controllers
     {
         private readonly ILogger<XeroController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IOptions<XeroConfiguration> XeroConfig;
+        private readonly XeroConfiguration _xeroConfig;
 
         public XeroController(IOptions<XeroConfiguration> config, ILogger<XeroController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
-            this.XeroConfig = config;
+            _xeroConfig = config.Value;
         }
 
         public IActionResult Index()
         {
-            var xconfig = new XeroConfiguration();
-            xconfig.ClientId = "713B16BE2997493E8F3F37AD00400F25";
-            xconfig.ClientSecret = "GCu6vvrQ6HFgzWKsOAysK2Q78rtQW_jB_V97sKbGvulKuhib";
-            xconfig.CallbackUri = new Uri("http://localhost:5000/signin-oidc"); //default for standard webapi template
-            xconfig.Scope = "openid profile email offline_access files accounting.transactions accounting.contacts";
-
-            var client = new XeroClient(xconfig, _httpClientFactory);
+            
+            var client = new XeroClient(_xeroConfig, _httpClientFactory);
 
             return Redirect(client.BuildLoginUri());
         }
         
         [Route("signin-oidc")]
-        public async Task<IActionResult> CallBack(string code, string session_state)
+        public async Task<IActionResult> CallBack(string code, string sessionState)
         {
-            XeroConfiguration xconfig = new XeroConfiguration(); 
-    
-            xconfig.ClientId = "713B16BE2997493E8F3F37AD00400F25";
-            xconfig.ClientSecret = "GCu6vvrQ6HFgzWKsOAysK2Q78rtQW_jB_V97sKbGvulKuhib";
-            xconfig.CallbackUri = new Uri("http://localhost:5000/signin-oidc"); //default for standard webapi template
-            xconfig.Scope = "openid profile email files accounting.transactions accounting.contacts offline_access accounting.contacts.read";
-	
-            var client = new XeroClient(xconfig, _httpClientFactory);
+            
+            var client = new XeroClient(_xeroConfig, _httpClientFactory);
 	
             //before getting the access token please check that the state matches
-            var token = await client.RequestAccessTokenAsync(code);
+            IXeroToken token = null;
+            try
+            {
+                token = await client.RequestAccessTokenAsync(code);
 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message,ex);
+                ViewData["Message"] = ex.Message;
+                return View("Error"); 
+            }
+            
             XeroEmployeeService.Token = token;
-            XeroEmployeeService.Client = client;
+            XeroEmployeeService.XeroClient = client;
+            
             // //from here you will need to access your Xero Tenants
             // List<Tenant> tenants = await client.GetConnectionsAsync(token);
             //

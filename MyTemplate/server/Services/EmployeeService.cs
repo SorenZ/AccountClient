@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace mytemplate
+namespace MyTemplate.server.Services
 {
    public interface IEmployeeService
    {
@@ -21,10 +21,11 @@ namespace mytemplate
    {
       public int Id { get; set; }
       public Guid? ContactId { get; set; }
+      public string ContactTitle { get; set; }
       public string FirstName { get; set; }
       public string LastName { get; set; }
       public int ReportTo { get; set; }
-      public string FullName => $"{FirstName} {LastName}";
+      public string FullName => $"{ContactTitle} ({FirstName} {LastName})";
    }
 
    public class EmployeeService : IEmployeeService

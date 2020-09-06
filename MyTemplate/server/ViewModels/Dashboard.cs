@@ -5,8 +5,9 @@ using System.Reactive.Linq;
 using DotNetify;
 using DotNetify.Routing;
 using DotNetify.Security;
+using MyTemplate.server.Services;
 
-namespace mytemplate
+namespace MyTemplate.server.ViewModels
 {
    [Authorize]
    public class Dashboard : BaseVM, IRoutable

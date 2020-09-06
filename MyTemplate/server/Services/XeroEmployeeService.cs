@@ -7,12 +7,12 @@ using Xero.NetStandard.OAuth2.Client;
 using Xero.NetStandard.OAuth2.Model;
 using Xero.NetStandard.OAuth2.Token;
 
-namespace mytemplate
+namespace MyTemplate.server.Services
 {
     public class XeroEmployeeService : IEmployeeService
     {
         public static IXeroToken Token { get; set; }
-        public static IXeroClient Client;
+        public static IXeroClient XeroClient;
         private readonly IAccountingApi _accountingApi;
         private readonly ILogger<XeroEmployeeService> _logger;
         private readonly List<EmployeeModel> _employees = new List<EmployeeModel>();
@@ -67,7 +67,7 @@ namespace mytemplate
             if (Token == null)
                 return null;
 
-            var connections = Client.GetConnectionsAsync(Token).Result;
+            var connections = XeroClient.GetConnectionsAsync(Token).Result;
 
             var contact = _accountingApi.GetContactAsync(Token.AccessToken, connections[0].TenantId.ToString()
                 , contactId).Result;
@@ -86,7 +86,7 @@ namespace mytemplate
             if (Token == null)
                 return;
             
-            var connections =  Client.GetConnectionsAsync(Token).Result;
+            var connections =  XeroClient.GetConnectionsAsync(Token).Result;
             
             var contacts = _accountingApi.GetContactsAsync(Token.AccessToken, connections[0].TenantId.ToString()).Result;
             var id = 0;
@@ -97,8 +97,9 @@ namespace mytemplate
                     {
                         Id = ++id,
                         ContactId = s.ContactID,
-                        FirstName = s.FirstName,
-                        LastName = s.LastName
+                        ContactTitle = s.Name ?? "NULL",
+                        FirstName = s.FirstName ?? "NULL",
+                        LastName = s.LastName ?? "NULL"
                     }));
         }
     }

@@ -1,9 +1,9 @@
-﻿﻿using System;
+﻿using System;
 using System.IO;
 using System.Text;
-using XeroWebhooksReceiver.Config;
+using MyTemplate.server.Config;
 
-namespace XeroWebhooksReceiver.Queue
+namespace MyTemplate.server.Queue
 {
     public interface IQueue<T>
     {
