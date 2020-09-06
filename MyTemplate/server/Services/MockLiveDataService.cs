@@ -1,7 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using Microsoft.Extensions.Logging;
+using MyTemplate.server.Services;
 
 namespace mytemplate
 {
@@ -26,14 +29,13 @@ namespace mytemplate
 
    public class MockLiveDataService : ILiveDataService
    {
+      private readonly ILogger<MockLiveDataService> _logger;
       private readonly Random _random = new Random();
 
       private readonly Dictionary<int, string> _activities = new Dictionary<int, string> {
-            {1, "Offline"},
-            {2, "Active"},
-            {3, "Busy"},
-            {4, "Away"},
-            {5, "In a Call"}
+            {1, "Init"},
+            {2, "Added"},
+            {3, "Updated"},
         };
 
       public IObservable<string> Download { get; }
@@ -52,8 +54,9 @@ namespace mytemplate
 
       public IObservable<Activity> RecentActivity { get; }
 
-      public MockLiveDataService(IEmployeeService employeeService)
+      public MockLiveDataService(IEmployeeService employeeService, ILogger<MockLiveDataService> logger)
       {
+         _logger = logger;
          Download = Observable
             .Interval(TimeSpan.FromMilliseconds(900))
             .StartWith(0)
@@ -89,34 +92,84 @@ namespace mytemplate
             .StartWith(0)
             .Select(_ => Enumerable.Range(1, 3).Select(i => _random.Next(1, 100)).ToArray());
 
-         RecentActivity = Observable
-            .Interval(TimeSpan.FromSeconds(10))
-            .StartWith(0)
-            .Select(_ => GetRandomEmployee(employeeService))
-            .Select(employee => new Activity
-            {
-               Id = employee.Id,
-               PersonName = employee.FullName,
-               Status = _activities[_random.Next(1, 6)]
-            })
-            .StartWith(
-               Enumerable.Range(1, 4)
-               .Select(_ => GetRandomEmployee(employeeService))
+         var contactObservable = new ContactObservable();
+         contactObservable.Subscribe(new ContactObserver("console notification"));
+         
+         RecentActivity = 
+            contactObservable   
+            .Populate(employeeService.GetAll()
                .Select(employee => new Activity
                {
                   Id = employee.Id,
                   PersonName = employee.FullName,
-                  Status = _activities[_random.Next(1, 6)],
-               })
-               .ToArray()
-            );
+                  Status = _activities[1],
+               }));
+            // .StartWith(
+            //    employeeService.GetAll()
+            //       .Select(employee => new Activity
+            //       {
+            //          Id = employee.Id,
+            //          PersonName = employee.FullName,
+            //          Status = _activities[1],
+            //       })
+            //       .ToArray());
+            
+            
+            
+            // .Interval(TimeSpan.FromSeconds(30))
+            // .Select(s => GetChanges(employeeService))
+            // .Select(employee => new Activity
+            // {
+            //    Id = employee.Id,
+            //    PersonName = employee.FullName,
+            //    Status = _activities[_random.Next(1, 3)],
+            // })
+            // .SelectMany(_ => employeeService.GetAll())
+            // .Select(employee => new Activity
+            // {
+            //    Id = employee.Id,
+            //    PersonName = employee.FullName,
+            //    Status = _activities[_random.Next(1, 6)]
+            // })
+            
+            
+            
+            Observable
+            .Empty<Activity>()
+            .StartWith(
+               employeeService.GetAll()
+                  .Select(employee => new Activity
+                  {
+                     Id = employee.Id,
+                     PersonName = employee.FullName,
+                     Status = _activities[1],
+                  })
+                  .ToArray());
+
+            // RecentActivity.Subscribe(new ContactReporter("console notification"));
+            
+            // (RecentActivity as ContactTracer)?.Populate(employeeService.GetAll()
+            //    .Select(employee => new Activity
+            //    {
+            //       Id = employee.Id,
+            //       PersonName = employee.FullName,
+            //       Status = _activities[1],
+            //    }));
+            
+            
+         
       }
       
-      private EmployeeModel GetRandomEmployee(IEmployeeService employeeService) 
+
+      private void OnNext(Activity obj)
       {
-         EmployeeModel record;
-         while ((record = employeeService.GetById(_random.Next(1, 20))) == null );
-         return record;
+         // foreach (var observer in RecentActivity) {
+         //    if (! loc.HasValue)
+         //       observer.OnError(new LocationUnknownException());
+         //    else
+         //       observer.OnNext(loc.Value);
+         // }
+         throw new NotImplementedException();
       }
    }
 }

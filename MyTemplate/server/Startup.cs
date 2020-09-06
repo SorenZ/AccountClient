@@ -6,17 +6,33 @@ using DotNetify.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using MyTemplate.server.BackgroundServices;
+using MyTemplate.server.Services;
+using Xero.NetStandard.OAuth2.Api;
+using XeroWebhooksReceiver.Config;
+using XeroWebhooksReceiver.Helpers;
+using XeroWebhooksReceiver.Queue;
 
 namespace mytemplate
 {
    public class Startup
    {
+      
+      public Startup(IConfiguration configuration)
+      {
+         Configuration = configuration;
+      }
+
+      public IConfiguration Configuration { get; }
+      
       public void ConfigureServices(IServiceCollection services)
       {
+         services.AddHttpClient();
          // Add OpenID Connect server to produce JWT access tokens.
          services.AddAuthenticationServer();
 
@@ -24,8 +40,15 @@ namespace mytemplate
          services.AddDotNetify();
 
          services.AddTransient<ILiveDataService, MockLiveDataService>();
-         services.AddSingleton<IEmployeeService, EmployeeService>();
+         services.AddSingleton<IEmployeeService, XeroEmployeeService>();
          services.AddHostedService<ContactWatcher>();
+         services.TryAddSingleton<IAccountingApi, AccountingApi>();
+         
+         services.TryAddSingleton(Configuration.GetSection("PayloadQueueSettings").Get<PayloadQueueSettings>());
+         services.TryAddSingleton(Configuration.GetSection("WebhookSettings").Get<WebhookSettings>());
+
+         services.TryAddTransient<IQueue<string>, PayloadQueue>();
+         services.TryAddSingleton<ISignatureVerifier, SignatureVerifier>();
       }
 
       public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -47,7 +70,8 @@ namespace mytemplate
             });
 
             // Filter to check whether user has permission to access view models with [Authorize] attribute.
-            config.UseFilter<AuthorizeFilter>();
+            // config.UseFilter<AuthorizeFilter>();
+            // config.Register<ContactVm>();
          });
 
          if (env.IsDevelopment())
@@ -66,7 +90,9 @@ namespace mytemplate
          app.UseEndpoints(endpoints =>
          {
             endpoints.MapHub<DotNetifyHub>("/dotnetify");
-            endpoints.MapFallbackToFile("index.html");
+            endpoints.MapControllers();
+            endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            // endpoints.MapFallbackToFile("index.html");
          });
       }
    }

@@ -14,11 +14,13 @@ namespace mytemplate
       int Add(EmployeeModel record);
       void Update(EmployeeModel record);
       void Delete(int id);
+      // EmployeeModel LastChange();
    }
 
    public class EmployeeModel
    {
       public int Id { get; set; }
+      public Guid? ContactId { get; set; }
       public string FirstName { get; set; }
       public string LastName { get; set; }
       public int ReportTo { get; set; }
@@ -55,6 +57,10 @@ namespace mytemplate
       }
 
       public void Delete(int id) => _employees.Remove(_employees.FirstOrDefault(i => i.Id == id));
+      public EmployeeModel LastChange()
+      {
+         throw new NotImplementedException();
+      }
 
       private string GetEmbeddedResource(string resourceName)
       {

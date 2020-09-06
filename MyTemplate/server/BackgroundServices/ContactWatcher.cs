@@ -24,6 +24,7 @@ namespace MyTemplate.server.BackgroundServices
             smeeCli.OnMessage += (sender, myEvent) =>
             {
                 _logger.LogInformation($"Message: {JsonConvert.SerializeObject(myEvent)}");
+                 
             };
             smeeCli.OnPing += (sender, args) => _logger.LogInformation("Ping from SMEE.io");
             

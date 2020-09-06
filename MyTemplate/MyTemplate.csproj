@@ -12,9 +12,19 @@
     <PackageReference Include="System.Reactive" Version="3.1.1" />
     <PackageReference Include="AspNet.Security.OpenIdConnect.Server" Version="2.0.0" />
     <PackageReference Include="Smee.IO.Client" Version="1.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.3" />
+    <PackageReference Include="Xero.NetStandard.OAuth2" Version="0.1.0" />
+    <PackageReference Include="Xero.NetStandard.OAuth2Client" Version="0.0.2" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="server\Services\employees.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
     <!-- Ensure Node.js is installed -->
