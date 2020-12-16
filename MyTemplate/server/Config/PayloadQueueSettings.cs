@@ -1,4 +1,4 @@
-﻿﻿namespace XeroWebhooksReceiver.Config
+﻿﻿namespace MyTemplate.server.Config
 {
     public class PayloadQueueSettings
     {

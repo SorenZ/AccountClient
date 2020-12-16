@@ -11,14 +11,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using MyTemplate.server.BackgroundServices;
+using MyTemplate.server.Config;
+using MyTemplate.server.Helpers;
+using MyTemplate.server.Queue;
 using MyTemplate.server.Services;
 using Xero.NetStandard.OAuth2.Api;
-using XeroWebhooksReceiver.Config;
-using XeroWebhooksReceiver.Helpers;
-using XeroWebhooksReceiver.Queue;
+using Xero.NetStandard.OAuth2.Config;
 
-namespace mytemplate
+namespace MyTemplate.server
 {
    public class Startup
    {
@@ -38,14 +38,14 @@ namespace mytemplate
 
          services.AddSignalR();
          services.AddDotNetify();
-
+         services.Configure<XeroConfiguration>(Configuration.GetSection("XeroConfiguration"));
          services.AddTransient<ILiveDataService, MockLiveDataService>();
          services.AddSingleton<IEmployeeService, XeroEmployeeService>();
-         services.AddHostedService<ContactWatcher>();
          services.TryAddSingleton<IAccountingApi, AccountingApi>();
          
          services.TryAddSingleton(Configuration.GetSection("PayloadQueueSettings").Get<PayloadQueueSettings>());
          services.TryAddSingleton(Configuration.GetSection("WebhookSettings").Get<WebhookSettings>());
+         services.TryAddSingleton(Configuration.GetSection("XeroConfiguration").Get<XeroConfiguration>());
 
          services.TryAddTransient<IQueue<string>, PayloadQueue>();
          services.TryAddSingleton<ISignatureVerifier, SignatureVerifier>();

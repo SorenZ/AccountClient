@@ -1,9 +1,9 @@
-﻿﻿using System;
+﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using XeroWebhooksReceiver.Config;
+using MyTemplate.server.Config;
 
-namespace XeroWebhooksReceiver.Helpers
+namespace MyTemplate.server.Helpers
 {
     public interface ISignatureVerifier
     {

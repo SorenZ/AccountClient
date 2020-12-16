@@ -1,17 +1,15 @@
-﻿﻿using System;
- using System.IO;
+﻿using System.IO;
 using System.Linq;
- using Microsoft.AspNetCore.Authorization;
- using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
- using mytemplate;
- using MyTemplate.server.Services;
- using Newtonsoft.Json;
- using WebhooksDataContracts;
- using XeroWebhooksReceiver.Helpers;
-using XeroWebhooksReceiver.Queue;
+using MyTemplate.server.Dto;
+using MyTemplate.server.Helpers;
+using MyTemplate.server.Queue;
+using MyTemplate.server.Services;
+using Newtonsoft.Json;
 
-namespace XeroWebhooksReceiver.Controllers
+namespace MyTemplate.Controllers
 {
     [Route("webhooks")]
     [AllowAnonymous]

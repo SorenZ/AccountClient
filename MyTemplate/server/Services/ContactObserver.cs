@@ -1,5 +1,4 @@
 ﻿using System;
-using mytemplate;
 
 namespace MyTemplate.server.Services
 {

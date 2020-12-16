@@ -5,7 +5,7 @@ using DotNetify;
 using DotNetify.Routing;
 using DotNetify.Security;
 
-namespace mytemplate
+namespace MyTemplate.server.ViewModels
 {
    [Authorize]
    public class AppLayout : BaseVM, IRoutable

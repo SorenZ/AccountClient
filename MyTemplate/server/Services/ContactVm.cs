@@ -4,7 +4,6 @@ using System.Linq;
 using DotNetify;
 using DotNetify.Routing;
 using DotNetify.Security;
-using mytemplate;
 
 namespace MyTemplate.server.Services
 {

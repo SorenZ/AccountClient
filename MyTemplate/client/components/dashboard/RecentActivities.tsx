@@ -49,7 +49,7 @@ export default function RecentActivities({ vm, data }: IRecentActivitiesProps) {
     <Card>
       <div className={classes.header}>Recent Activities</div>
       <List>
-        {data.map((item, idx) => (
+        {data != null && data.map((item, idx) => (
           <React.Fragment key={idx}>
             <ListItem alignItems='flex-start'>
               <ListItemAvatar>

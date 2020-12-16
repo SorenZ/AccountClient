@@ -1,7 +1,7 @@
-﻿﻿using System;
+﻿using System;
 using Newtonsoft.Json;
 
-namespace WebhooksDataContracts
+namespace MyTemplate.server.Dto
 {
     public class Event
     {
